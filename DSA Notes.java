@@ -168,7 +168,7 @@
         bubbleSort(arr, n - 1);
     }
 
-➤ Recursive Bubble Sort:
+➤ Recursive Insertion Sort:
     
     ⊛ first we start a loop and find the current element at i = 1 and then by comparing elements we insert an element at particular position.
     ⊛ And then we recursive call for (N - 1) & (i + 1), and if n == 0 then it will terminate.
@@ -306,14 +306,144 @@
         }
     }
 
+➤Q. Write a program to find union of two sorted Array.
+
+    ⊛ We will start with two pointer one will be in first array initialized with 0 index and another will be in second Array initialized with 0 index.
+    ⊛ by comparing these two pointers with we will add values in our map as arrays are sorted.
+    ⊛ Time Complexity: O(N) & Space Complexity: O(1).
+
+    public static ArrayList<Integer> findUnion(int arr1[], int arr2[], int n, int m)
+    {
+           HashMap<Integer, Integer> map = new HashMap<>();
+           ArrayList<Integer> ans = new ArrayList<>();
+           for(int i = 0; i < n; i++){
+               map.put(arr1[i], map.getOrDefault(arr1[i],0)+1);
+           }
+           for(int i = 0; i < m; i++){
+               map.put(arr2[i], map.getOrDefault(arr2[i], 0) + 1);
+           }
+           for(int val: map.keySet()){
+               ans.add(val);
+           }
+           return ans;
+        */
+        
+        // Optimized Solution: --> Time Complexity: O(N) & Space complexity: O(1)
+        int i = 0, j = 0;
+        ArrayList<Integer> union = new ArrayList<>();
+        while(i < n && j < m){
+            if(arr1[i] <= arr2[j]){
+                if(union.size() == 0 || union.get(union.size() - 1) != arr1[i]){
+                    union.add(arr1[i]);
+                }
+                i++; // it will be outside to ignore duplicate values.
+            }
+            else{
+                if(union.size() == 0 || union.get(union.size()-1) != arr2[j]){
+                    union.add(arr2[j]);
+                }
+                j++; // it will be outside to ignore duplicate values.
+            }
+        }
+        while(i < n){
+            if(union.get(union.size() - 1) != arr1[i]){
+                union.add(arr1[i]);
+            }
+            i++; // it will be outside to ignore duplicate values.
+        }
+        while(j < m){
+            if(union.get(union.size() - 1) != arr2[j]){
+                union.add(arr2[j]);
+            }
+            j++; // it will be outside to ignore duplicate values.
+        }
+        return union;
+    }
+
+➤Q. Write a program to find Intersection of two sorted Array.
+
+     ⊛ We will start with two pointer one will be in first array initialized with 0 index and another will be in second Array initialized with 0 index.
+     ⊛ by comparing these two pointers with we will add values in our map as arrays are sorted.
+     ⊛ Time Complexity: O(N) & Space Complexity: O(1).
+
+     public static ArrayList<Integer> findIntersection(int[] arr1, int[] arr2, int n, int m){
+        /*
+         * BruteForce Approach --> Time complexity: O(N^2) & Space Complexity: O(1).
+         * ArrayList<Integer> intersection = new ArrayList<>();
+           for(int i = 0; i < n; i++){
+               for(int j = 0; j < m; j++){
+                   if(arr1[i] == arr2[j]){
+                       if((intersection.size() == 0 ||intersection.get(intersection.size() - 1) != arr1[i])){
+                           intersection.add(arr1[i]);
+                       }
+                   }
+               }
+           }
+           return intersection;
+        */
+
+        // Optimized Solution --> Time complexity: O(N) & Space complexity: O(1).
+        ArrayList<Integer> ans = new ArrayList<>();
+        int i = 0, j = 0;
+        while(i < arr1.length && j < arr2.length){
+            if(arr1[i] == arr2[j]){
+                ans.add(arr1[i]);
+                i++;
+                j++;
+            }
+            else if(arr1[i] < arr2[j]){
+                i++;
+            }
+            else{
+                j++;
+            }
+        }
+        return ans;
+        
+    }
 
 
+➤Q. Write a program to find missing number in the range 0 to N in an Array.
+       
+      ⊛ First we will find the Sum of all element in the array and then we will find the sum of 0 to N - 1 (if from 0) or 1 to N (if from 1).
+      ⊛ by subtracting the sum of all elments by Sum from 1 to N we will get our number which is missing.
+      ⊛ Time Complexity: O(N) & Space Complexity: O(1).
+
+     public static int missingNumber(int[] arr) {
+        int sum = 0;
+        int N = arr.length;
+        // calculating sum of all elements of the array.
+        for(int i = 0; i < arr.length; i++){
+            sum += arr[i];
+        }
+        // calculation sum till 0 to N - 1
+        int sum2 = (N * (N + 1))/2;
+        // We will get our ans by subtracting
+        int ans = sum2 - sum;
+        return ans;
+        
+    }
 
 
+➤Q. Write a program to search an element from 2D Array.
+       
+      ⊛ This is another method to search element from 2D array by using two pointer.
+      ⊛ Time Complexity: O(M * N) & Space Complexity: O(1).
 
 
-
-
-
-
+    public static boolean searchMatrix(int[][] matrix, int target) {
+        int i = 0, j = matrix[0].length - 1;
+        while(i < matrix.length && j >= 0){
+            if(matrix[i][j] == target){
+                return true;
+            }
+            else if(matrix[i][j] > target){
+                j--;
+            }
+            else{
+                i++;
+            }
+        }
+        return false;
+    }
 
