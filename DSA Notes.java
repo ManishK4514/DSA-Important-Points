@@ -427,23 +427,218 @@
 
 ➤Q. Write a program to search an element from 2D Array.
        
-      ⊛ This is another method to search element from 2D array by using two pointer.
-      ⊛ Time Complexity: O(M * N) & Space Complexity: O(1).
+      ⊛ To search an element in 2D Array We can search in each row of 2D matrix through Binary Search as each row of 2D array itself a Array.
+      ⊛  The Best Optimized way to search an element from 2D Array is treat entire 2D array as a Single 1D Array by using two pointer and Apply Binary search.
+      ⊛ Time Complexity: O(N * logM) & Space Complexity: O(1).
 
 
     public static boolean searchMatrix(int[][] matrix, int target) {
-        int i = 0, j = matrix[0].length - 1;
-        while(i < matrix.length && j >= 0){
-            if(matrix[i][j] == target){
+        /*
+         * Solution 1: Using Binary Search --> Time Complexity: O(N*logM) & Space Complexity: O(1)
+           int row = 0;
+           while(row < matrix.length){
+               int start = 0;
+               int end = matrix[row].length - 1;
+               while(start <= end){
+                   int mid = start + (end - start)/2;
+                   if(matrix[row][mid] == target){
+                       return true;
+                   }
+                   else if(matrix[row][mid] > target){
+                       end = mid - 1;
+                   }
+                   else{
+                       start = mid + 1;
+                   }
+               }
+               row++;
+           }
+           return false;
+
+        */
+        // Optimized Solution: Time Complexity: O(log(m*n)) & Space complexity: O(1)
+        // In this Solution we treat entire 2D Array as a single Array and search by the index.
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int start = 0;
+        int end = (n * m) - 1;
+        while(start <= end){
+            int mid = (start + (end - start)/2);
+            if(matrix[mid/m][mid%m] == target){
                 return true;
             }
-            else if(matrix[i][j] > target){
-                j--;
+            if(matrix[mid/m][mid%m] > target){
+                end = mid - 1;
             }
             else{
-                i++;
+                start = mid + 1;
             }
         }
         return false;
     }
+
+➤Q. Write a program to Find the index of two elements Whose sum is equal to K.(Two Sum)
+   
+      ⊛ we will take a hashmap and we will check in each iteration that hashmap contains (target - nums[i]) if contains then 
+      ⊛  we will store our current index in ans[1] and in ans[0] we will store the index of that element which is the (target - nums[i]).
+      ⊛ Time Complexity: O(N ) & Space Complexity: O(N).
+
+    
+    public static int[] findTwoSum(int[] nums, int target){
+        int[] ans = new int[2];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i < nums.length; i++){
+            if(map.containsKey(target - nums[i])){
+                ans[1] = i;
+                ans[0] = map.get(target - nums[i]);
+                return ans;
+            }
+            map.put(nums[i], i);
+        }
+        return ans;
+    }
+
+➤Q. Write a program to sort 0, 1, 2.(sort 0's, 1's & 2's)
+
+
+      ⊛ The most easiest Approach is sort the Array as order as 0, 1, 2 (Time complexity: O(NlogN).
+      ⊛  The most Optimized Solution is to use Dutch National Flag Algorithm
+      ⊛ Time Complexity: O(N ) & Space Complexity: O(1).
+
+
+         public static void sortColors(int[] nums) {
+        // Optimized Approach: “Dutch National Flag problem” Time Complexity: O(N) & Space Complexity: O(1)
+        int low = 0;
+        int mid = 0;
+        int high = nums.length - 1;
+        while(mid <= high){
+            switch(nums[mid]){
+                case 0: swap(nums, low++, mid++);
+                break;
+                case 1: mid++;
+                break;
+                case 2: swap(nums, high--, mid);
+                break;
+            }
+        }
+    }
+
+
+
+➤Q. Write a program to find the majority Element, An element which has maximum frequency and Appearance more than N/2.(Majority Element)
+
+
+      ⊛ The most easiest Approach is sort the Array and return nums[nums.length/2] as given that majority element frequency more than N/2.
+      ⊛  The most Optimized Solution is to use MOORE VOTING ALGORITHM.
+      ⊛ Time Complexity: O(N ) & Space Complexity: O(1).
+
+
+      public static int majorityElement(int[] nums) {
+
+        // Solution 4: By Moore Voting Algorithm // this will only work if majority element exists.
+        // Time Complexity: O(N) & Space Complexity: O(1)
+
+        int count = 0, element = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(count == 0){
+                element = nums[i];
+                count++;
+            }
+            else if(nums[i] != element){
+                count--;
+            }
+            else{
+                count++;
+            }
+        }
+        return element;
+    }
+
+
+➤Q. Write a program to Find the Maximum SubArray Sum. (Kadane's Algorithm)
+
+
+      ⊛ The brute force approach is find the all possible subarrays and calculate the sum. (Time complexity: O(N^3)
+      ⊛  We only need to calculate the maximum sum so we can avoid our third loop and when ever previous sum is less than curr sum we will updated our sum. (O(N^2))
+      ⊛  The Best Optimized Approach is to use KADANE'S ALGORITHM
+      ⊛ Time Complexity: O(N ) & Space Complexity: O(1).
+
+      public static int maxSubArray(int[] nums) {
+        /*
+         * BruteForce Solution: --> Time Complexity: O(N^2) & Space Complexity: O(1):
+         * In this we find all possible subarrays sum and then find the maximum among them.
+         * int maxSum = Integer.MIN_VALUE;
+           for(int i = 0; i < nums.length; i++){
+               int sum = 0;
+               for(int j = i; j < nums.length; j++){
+                   sum += nums[j];
+                   maxSum = Math.max(maxSum, sum);
+               }
+           }
+           return maxSum;
+
+        */
+        
+        // Optimized Solution: Using Kadane's algorithm
+        // Time complexity: O(N) & Space Complexity: O(1).
+
+        int maxSum = Integer.MIN_VALUE;
+        int currSum = 0;
+        for(int i = 0; i < nums.length; i++){
+            currSum += nums[i];
+            if(maxSum < currSum){
+                maxSum = currSum;
+            }
+            if(currSum < 0){
+                currSum = 0;
+            }
+        }
+        return maxSum;
+    }
+
+
+
+➤Q. Write a program to Find the Maximum SubArray Sum. (Kadane's Algorithm)
+
+
+      ⊛ The brute force approach is find the all possible subarrays and calculate the sum which is equal to K. (Time complexity: O(N^3)
+      ⊛  We only need to calculate the maximum sum so we can avoid our third loop and when ever previous sum is less than curr sum we will updated our sum until sum != K. (O(N^2))
+      ⊛ Now there is another optimized way for this.
+      ⊛ Time Complexity: O(N ) & Space Complexity: O(1).
+
+       public static void subArrWithSumK(int nums[], int k)
+    {
+        /*Bruteforce Approach: Time complexity: O(N^2) & Space Complexity: O(1).
+        for(int i = 0; i < nums.length; i++){
+            int sum = 0;
+            for(int j = i; j < nums.length; j++){
+                sum += nums[j];
+                if(sum == k){
+                    for(int m = i; m <= j; m++){
+                        System.out.print(nums[m] + " ");
+                    }
+                    System.out.println();
+                }
+            }
+        }
+        */ 
+
+        // Optimized Solution: Time Complexity: O(N) to find subarray and O(N) to print subarray & Space complexity: O(1)
+        int start = 0, end = -1, sum = 0;
+        while (start < nums.length) {
+          while ((end + 1 < nums.length) && (sum + nums[end + 1] <= k)){
+            sum += nums[++end];
+          }
+          if (sum == k) {
+            for (int p = start; p <= end; p++)
+              System.out.print(nums[p] + " ");
+            System.out.println();
+          }
+    
+          sum -= nums[start];
+          start++;
+        }  
+    }
+
+
 
